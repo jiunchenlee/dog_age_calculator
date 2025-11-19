@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>妙麗歲數計算機</title>
+
+<style>
+  body {
+    background-color: #FFF7E6;
+    font-family: "Arial", "微軟正黑體";
+    text-align: center;
+    padding: 50px;
+    color: #FF6B1A;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: #FFE5C1;
+    border-radius: 20px;
+    padding: 30px;
+    width: 350px;
+    margin: auto;
+    box-shadow: 0 5px 12px rgba(255,140,80,0.3);
+  }
+
+  input[type="date"] {
+    padding: 8px;
+    border-radius: 10px;
+    border: 2px solid #FFAA70;
+    background: #FFF7E6;
+    font-size: 16px;
+    color: #FF6B1A;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: #FF8A3C;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255,140,80,0.4);
+  }
+
+  button:hover {
+    background-color: #FF6B1A;
+  }
+
+  .result {
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #FFD7A8;
+    padding: 15px;
+    border-radius: 15px;
+    display: inline-block;
+    width: 80%;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🐾 妙麗歲數計算機 🧡</h1>
+
+<div class="card">
+  <label>🐶 狗狗的出生日期：</label><br><br>
+  <input type="date" id="dogBirthday" value="2023-02-28"><br>
+  <button onclick="calculateDogAge()">開始計算 🎉</button>
+
+  <div id="resultBox" class="result" style="display:none;"></div>
+</div>
+
+<script>
+// 🐕 UCSD DNA 甲基化（Cell Systems 2020）狗齡換算成人齡：
+// Human_age = 16 * ln(Dog_age) + 31
+function dogToHumanAge(dogYears) {
+  return (16 * Math.log(dogYears) + 31).toFixed(1);
+}
+
+// 🐾 計算與顯示
+function calculateDogAge() {
+  const birthday = document.getElementById("dogBirthday").value;
+  if (!birthday) {
+    alert("請先選擇狗狗的生日！🐶");
+    return;
+  }
+
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  const diffTime = today - birthDate;
+  const dogYears = diffTime / (1000 * 60 * 60 * 24 * 365);
+  const humanAge = dogToHumanAge(dogYears);
+
+  const resultText = 
+    `🐕 狗狗的實際年齡：約 <b>${dogYears.toFixed(2)}</b> 歲<br>
+     👨‍🦰 換算人類年齡：約 <b>${humanAge}</b> 歲`;
+
+  document.getElementById("resultBox").style.display = "block";
+  document.getElementById("resultBox").innerHTML = resultText;
+
+  localStorage.setItem("lastDogAge", resultText);
+  localStorage.setItem("lastBirthday", birthday);
+}
+
+// 🐾 載入資料或顯示妙麗生日
+window.onload = function() {
+  const saved = localStorage.getItem("lastDogAge");
+  const savedBirthday = localStorage.getItem("lastBirthday");
+
+  if (saved && savedBirthday) {
+    document.getElementById("dogBirthday").value = savedBirthday;
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("resultBox").innerHTML = saved;
+  } else {
+    // 🌟 預設自動計算妙麗
+    calculateDogAge();
+  }
+};
+</script>
+
+</body>
+</html>
